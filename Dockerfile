@@ -38,8 +38,16 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 # Copy project files
 COPY . .
 
+# Create complete Laravel storage structure
+RUN mkdir -p storage/framework/cache/data \
+    storage/framework/views \
+    storage/framework/sessions \
+    storage/logs \
+    storage/app/public \
+    storage/framework/testing \
+    bootstrap/cache
+
 # Fix permissions for Laravel storage & cache
-RUN mkdir -p storage/framework/cache/data storage/framework/views storage/framework/sessions bootstrap/cache
 RUN chmod -R 777 storage bootstrap/cache
 
 # Install Composer
