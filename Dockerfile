@@ -15,7 +15,25 @@ RUN apt-get update && apt-get install -y \
     curl \
     nodejs \
     npm \
+    chromium \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libasound2 \
+    fonts-liberation \
     && docker-php-ext-install zip pdo pdo_mysql gd mbstring exif pcntl bcmath sockets
+
+# Set Puppeteer environment variables
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Copy project files
 COPY . .
@@ -34,9 +52,9 @@ RUN composer install --no-dev --optimize-autoloader
 RUN npm install
 RUN npm run build
 
-# Cache Laravel config & routes
-RUN php artisan config:cache
-RUN php artisan route:cache
+# Cache Laravel config & routes (Removed to avoid build-time env issues)
+# RUN php artisan config:cache
+# RUN php artisan route:cache
 
 # Expose port
 EXPOSE 8000
