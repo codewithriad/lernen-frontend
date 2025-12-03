@@ -1,6 +1,7 @@
-# PHP 8.2 FPM
+# Use PHP 8.2 FPM
 FROM php:8.2-fpm
 
+# Set working directory
 WORKDIR /var/www
 
 # Install system dependencies + PHP extensions
@@ -16,27 +17,29 @@ RUN apt-get update && apt-get install -y \
     npm \
     && docker-php-ext-install zip pdo pdo_mysql gd mbstring exif pcntl bcmath sockets
 
-# Copy project
+# Copy project files
 COPY . .
 
-# Fix permissions
+# Fix permissions for Laravel storage & cache
 RUN mkdir -p storage/framework/cache/data bootstrap/cache
 RUN chmod -R 777 storage bootstrap/cache
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Install PHP dependencies (with scripts)
+# Install PHP dependencies (composer)
 RUN composer install --no-dev --optimize-autoloader
 
-# Build frontend
+# Build frontend assets
 RUN npm install
 RUN npm run build
 
-# Cache Laravel
+# Cache Laravel config & routes
 RUN php artisan config:cache
 RUN php artisan route:cache
 
+# Expose port
 EXPOSE 8000
 
+# Start Laravel server
 CMD php artisan serve --host=0.0.0.0 --port=$PORT
