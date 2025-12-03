@@ -39,7 +39,7 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 COPY . .
 
 # Fix permissions for Laravel storage & cache
-RUN mkdir -p storage/framework/cache/data bootstrap/cache
+RUN mkdir -p storage/framework/cache/data storage/framework/views storage/framework/sessions bootstrap/cache
 RUN chmod -R 777 storage bootstrap/cache
 
 # Install Composer
